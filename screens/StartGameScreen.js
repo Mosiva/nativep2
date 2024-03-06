@@ -1,8 +1,31 @@
-import React from "react";
-import { TextInput, View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { TextInput, View, StyleSheet, Alert } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
 
 export default function StartGameScreen() {
+  const [enteredNumber, setInteredNumber] = useState("");
+
+  const numberInputHandler = (enteredText) => {
+    setInteredNumber(enteredText);
+  };
+
+  const resetInputHandler = () => {
+    setInteredNumber("");
+  };
+
+  const confirmInputHandler = () => {
+    const chosenNumber = parseInt(enteredNumber);
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+      Alert.alert(
+        "Invalid number!",
+        "Numbers has to a number between 1 and 99.",
+        [{ text: "Okay", style: "destructive", onPress: resetInputHandler }]
+      );
+      return;
+    }
+    console.log("Valid number");
+  };
+
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -11,19 +34,29 @@ export default function StartGameScreen() {
         keyboardType="number-pad"
         autoCapitalize="none"
         autoCorrect={false}
+        value={enteredNumber}
+        onChangeText={numberInputHandler}
       />
-      <PrimaryButton>Reset</PrimaryButton>
-      <PrimaryButton>Confirm</PrimaryButton>
+      <View style={styles.buttonsContainer}>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
+        </View>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   inputContainer: {
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
     marginHorizontal: 24,
     marginTop: 100,
-    backgroundColor: "#4e0329",
+    backgroundColor: "white",
     borderRadius: 8,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 2 },
@@ -34,11 +67,17 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     fontSize: 32,
-    borderBottomColor: "#ddb52f",
+    borderBottomColor: "blue",
     borderBottomWidth: 2,
-    color: "#ddb52f",
+    color: "black",
     marginVertical: 8,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+  },
+  buttonContainer: {
+    flex: 1,
   },
 });
